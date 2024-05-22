@@ -205,11 +205,23 @@ div_mod = convert_to_hex(divide[1])
 square = convert_to_hex(LongSquare(A))
 pow = convert_to_hex(LongPower(A, B))
 
-print(f'Додавання: {sum}')
-print(f'Віднімання: {sub}')
-print(f'Множення: {mul}')
-print(f'Ділення: {div}')
-print(f'Остача: {div_mod}')
-print(f'Піднесення до квадрату: {square}')
-print(f'Піднесення у степінь: {pow}')
+#Time
+sum, sum_time = measure_time(LongAddition, A, B)
+
+sub, sub_time = measure_time(LongSubtraction, A, B)
+
+mul, mul_time = measure_time(LongMultiply, A, B)
+
+div, div_time = measure_time(LongDivideModule, A, B)
+
+square, square_time = measure_time(LongSquare, A)
+
+pow, pow_time = measure_time(LongPower, A, B)
+
+print(f'Додавання: {sum}, Час виконання: {sum_time} секунд')
+print(f'Віднімання: {sub}, Час виконання: {sub_time} секунд')
+print(f'Множення: {mul}, Час виконання: {mul_time} секунд')
+print(f'Ділення: {div}, Час виконання: {div_time} секунд')
+print(f'Піднесення до квадрату: {square}, Час виконання: {square_time} секунд')
+print(f'Піднесення у степінь: {pow}, Час виконання: {pow_time} секунд')
 
