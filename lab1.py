@@ -37,14 +37,14 @@ def convert_from_hex(hex_num):
 
 num_1_A = input('Enter the first number: ')
 num_2_B = input('Enter the second number: ')
-num_Module = input('Enter the module: ')
+
 
 A = convert_from_hex(num_1_A)
 B = convert_from_hex(num_2_B)
-Module = convert_from_hex(num_Module)
 
 
-'''Основні функції'''
+
+
 
 
 def LongAddition(a, b):
@@ -135,9 +135,6 @@ def LongPower(a, b):
     return pow
 
 
-'''Додаткові функції'''
-
-
 def LongCompare(a, b):
     while len(a) > 1 and a[-1] == 0:
         a.pop()
@@ -202,145 +199,22 @@ def BitCheck(a, i):
 def BitLength(a):
     return (len(a) - 1) * 32 + a[-1].bit_length()
 
+sum = convert_to_hex(LongAddition(A, B))
+sub = convert_to_hex(LongSubtraction(A, B))
+mul = convert_to_hex(LongMultiply(A, B))
 
-'''Lab--2'''
+divide = LongDivideModule(A, B)
+div = convert_to_hex(divide[0]) if divide[0] != [] else '0'
+div_mod = convert_to_hex(divide[1])
 
+square = convert_to_hex(LongSquare(A))
+pow = convert_to_hex(LongPower(A, B))
 
-def GCD(a, b):
-    divisor = [1]
-    compare = 0
-    col_vo_sub = 0
-    while a[0] % 2 == 0 and b[0] % 2 == 0:
-        a = LongShiftBitsToLow(a, 1)
-        b = LongShiftBitsToLow(b, 1)
-        divisor = LongShiftBitsToHigh(divisor, 1)
-    while a[0] % 2 == 0:
-        a = LongShiftBitsToLow(a, 1)
-    while LongCompare(b, [0]) != 0:
-        compare += 1
-        while b[0] % 2 == 0:
-            b = LongShiftBitsToLow(b, 1)
-        compare_of_number = LongCompare(a, b)
-        compare += 1
-        if compare_of_number == 1:
-            min_ab = b
-            sub = LongSubtraction(a, b)
-        elif compare_of_number == -1:
-            min_ab = a
-            sub = LongSubtraction(b, a)
-        else:
-            min_ab = b
-            sub = [0]
-        col_vo_sub += 1
-        a = min_ab
-        b = sub
-    divisor = LongMultiply(divisor, a)
-    return divisor, compare, col_vo_sub
+print('The result of addition: ' + sum)
+print('The result of substraction: ' + sub)
+print('The result of multiplication: ' + mul)
+print('The result of dividing: ' + div)
+print('The result of reminder of dividing: ' + div_mod)
+print('The result of elevation to the square: ' + square)
+print('The result of elevation: ' + pow)
 
-
-def EvklidGCD(a, b):
-    compare = 0
-    div = 0
-    while LongCompare(a, [0]) != 0 and LongCompare(b, [0]) != 0:
-        compare_of_number = LongCompare(a, b)
-        compare += 3
-        if compare_of_number == 1:
-            a = LongDivideModule(a, b)[1]
-        elif compare_of_number == -1:
-            b = LongDivideModule(b, a)[1]
-        else:
-            b = [0]
-        div += 1
-    res = LongAddition(a, b)
-    return res, compare, div
-
-
-def LCM(a, b):
-    gcd = GCD(a, b)[0]
-    multiply = LongMultiply(a, b)
-    result = LongDivideModule(multiply, gcd)[0]
-    return result
-
-
-def evaluateMu(module):
-    k = len(module)
-    ß = LongShiftDigitsToHigh([1], 2 * k)
-    µ = LongDivideModule(ß, module)[0]
-    return µ
-
-
-def BarrettReduction(value, module, mu):
-    k = len(module)
-    q = LongShiftBitsToLow(value.copy(), (k - 1) * 32)
-    q = LongMultiply(q, mu)
-    q = LongShiftBitsToLow(q, (k + 1) * 32)
-    reduction = LongSubtraction(value.copy(), LongMultiply(q, module))
-    while LongCompare(reduction, module) >= 0:
-        reduction = LongSubtraction(reduction, module)
-    return reduction
-
-
-def LongAdditionModule(a, b, mod):
-    sum = LongAddition(a, b)
-    return LongDivideModule(sum, mod)[1]
-
-
-def LongSubtractionModule(a, b, mod):
-    if LongCompare(a, b) == -1:
-        while LongCompare(a, b) == -1:
-            a = LongAddition(a, mod)
-        sub = LongSubtraction(a, b)
-    else:
-        sub = LongSubtraction(a, b)
-    return LongDivideModule(sub, mod)[1]
-
-
-def LongMultiplyModule(a, b, mod):
-    µ = evaluateMu(mod)
-    mul = LongMultiply(a, b)
-    return BarrettReduction(mul, mod, µ)
-
-
-def LongSquareMod(a, mod):
-    return LongMultiplyModule(a, a, mod)
-
-
-def LongModulePower(a, b, mod):
-    a_mod = LongDivideModule(a, mod)[1]
-    b_mod = LongDivideModule(b, mod)[1]
-    pow = [1]
-    µ = evaluateMu(mod)
-    for i in range(BitLength(b_mod)):
-        if BitCheck(b_mod, i) == 1:
-            pow = BarrettReduction(LongMultiply(pow, a_mod), mod, µ)
-        a_mod = BarrettReduction(LongSquare(a_mod), mod, µ)
-    return pow
-
-
-gcd_result, gcd_time = measure_time(GCD, A, B, index=0)
-print(f'GCD = {convert_to_hex(gcd_result)}')
-print(f'Time taken for GCD: {gcd_time} seconds')
-
-lcm_result, lcm_time = measure_time(LCM, A, B)
-print(f'LCM = {convert_to_hex(lcm_result)}')
-print(f'Time taken for LCM: {lcm_time} seconds')
-
-mod_sum_result, mod_sum_time = measure_time(LongAdditionModule, A, B, Module)
-print(f'(A+B)modModule = {convert_to_hex(mod_sum_result)}')
-print(f'Time taken for (A+B)modModule: {mod_sum_time} seconds')
-
-mod_sub_result, mod_sub_time = measure_time(LongSubtractionModule, A, B, Module)
-print(f'(A-B)modModule = {convert_to_hex(mod_sub_result)}')
-print(f'Time taken for (A-B)modModule: {mod_sub_time} seconds')
-
-mod_mul_result, mod_mul_time = measure_time(LongMultiplyModule, A, B, Module)
-print(f'(A*B)modModule = {convert_to_hex(mod_mul_result)}')
-print(f'Time taken for (A*B)modModule: {mod_mul_time} seconds')
-
-mod_sq_result, mod_sq_time = measure_time(LongSquareMod, A, Module)
-print(f'(A**2)modModule = {convert_to_hex(mod_sq_result)}')
-print(f'Time taken for (A**2)modModule: {mod_sq_time} seconds')
-
-mod_pow_result, mod_pow_time = measure_time(LongModulePower, A, B, Module)
-print(f'(A**B)modModule = {convert_to_hex(mod_pow_result)}')
-print(f'Time taken for (A**B)modModule: {mod_pow_time} seconds')
