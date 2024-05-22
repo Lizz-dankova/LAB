@@ -18,22 +18,47 @@ def parser(obj, n):
 
 
 def convert_to_hex(num):
-    if not num or num == [0]:
+    if num == [0]:
         return '0'
+    i = len(num) - 1
+    while num[i] == 0:
+        i -= 1
+        if i == -1:
+            return '0'
     num.reverse()
-    hex_num = ''.join(f'{x:08x}' for x in num).lstrip('0').swapcase()
+    hex_num = ''
+    for i in range(len(num)):
+        hex_el = hex(num[i])[2:]
+        if len(hex_el) != 8:
+            zeros = (8 - len(hex_el)) * '0'
+            hex_str = zeros + hex_el
+            hex_num += hex_str
+        else:
+            hex_num += hex_el
+        hex_num = hex_num.lstrip('0')
     num.reverse()
-    return hex_num or '0'
+    return hex_num.swapcase()
 
 
 def convert_from_hex(hex_num):
     n = math.ceil(len(hex_num) / 8)
-    hex_num = hex_num.zfill(n * 8)
-    hexs = [''.join(i) for i in parser(hex_num, 8)]
-    decs = [int(hex_str, 16) for hex_str in hexs]
+    hexs = []
+    decs = []
+    if len(hex_num) % 8 == 0:
+        hexs = [''.join(i) for i in parser(hex_num, 8)]
+    else:
+        zeros = 8 * n - len(hex_num)
+        str_zeros = zeros * '0'
+        final_hex = str_zeros + hex_num
+        hexs = [''.join(i) for i in parser(final_hex, 8)]
+    for i in range(len(hexs)):
+        decs.append(int(hexs[i], 16))
     decs.reverse()
     return decs
 
+
+def convert_result_to_hex(result):
+    return convert_to_hex(result)
 
 num_1_A = input('Перше число: ')
 num_2_B = input('Друге число: ')
@@ -194,34 +219,36 @@ def BitCheck(a, i):
 def BitLength(a):
     return (len(a) - 1) * 32 + a[-1].bit_length()
 
-sum = convert_to_hex(LongAddition(A, B))
-sub = convert_to_hex(LongSubtraction(A, B))
-mul = convert_to_hex(LongMultiply(A, B))
-
-divide = LongDivideModule(A, B)
-div = convert_to_hex(divide[0]) if divide[0] != [] else '0'
-div_mod = convert_to_hex(divide[1])
-
-square = convert_to_hex(LongSquare(A))
-pow = convert_to_hex(LongPower(A, B))
+sum_result = LongAddition(A, B)
+sum_hex = convert_result_to_hex(sum_result)
+sub_result = LongSubtraction(A, B)
+sub_hex = convert_result_to_hex(sub_result)
+mul_result = LongMultiply(A, B)
+mul_hex = convert_result_to_hex(mul_result)
+divide_result = LongDivideModule(A, B)
+div = convert_result_to_hex(divide_result[0]) if divide_result[0] != [] else '0'
+div_mod = convert_result_to_hex(divide_result[1])
+pow_result = LongPower(A, B)
+pow_hex = convert_result_to_hex(pow_result)
+square_result = LongSquare(A)
+square = convert_result_to_hex(square_result)
+#pow = convert_to_hex(LongPower(A, B))
 
 #Time
-sum, sum_time = measure_time(LongAddition, A, B)
+pow_result, pow_time = measure_time(LongPower, A, B)
+sum_result, sum_time = measure_time(LongAddition, A, B)
+sub_result, sub_time = measure_time(LongSubtraction, A, B)
+mul_result, mul_time = measure_time(LongMultiply, A, B)
+divide_result, div_time = measure_time(LongDivideModule, A, B)
+square_result, square_time = measure_time(LongSquare, A)
+pow_result, pow_time = measure_time(LongPower, A, B)
 
-sub, sub_time = measure_time(LongSubtraction, A, B)
 
-mul, mul_time = measure_time(LongMultiply, A, B)
-
-div, div_time = measure_time(LongDivideModule, A, B)
-
-square, square_time = measure_time(LongSquare, A)
-
-pow, pow_time = measure_time(LongPower, A, B)
-
-print(f'Додавання: {sum}, Час виконання: {sum_time} секунд')
-print(f'Віднімання: {sub}, Час виконання: {sub_time} секунд')
-print(f'Множення: {mul}, Час виконання: {mul_time} секунд')
-print(f'Ділення: {div}, Час виконання: {div_time} секунд')
+print(f'Додавання: {sum_hex}, Час виконання: {sum_time} секунд')
+print(f'Віднімання: {sub_hex}, Час виконання: {sub_time} секунд')
+print(f'Множення: {mul_hex}, Час виконання: {mul_time} секунд')
+print(f'Ділення: {div}, Час виконання: {div_time} секунд' )
+print(f'Остача: {div_mod}')
 print(f'Піднесення до квадрату: {square}, Час виконання: {square_time} секунд')
-print(f'Піднесення у степінь: {pow}, Час виконання: {pow_time} секунд')
+print(f'Піднесення у степінь: {pow_hex}, Час виконання: {pow_time} секунд')
 
