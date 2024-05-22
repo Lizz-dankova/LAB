@@ -35,17 +35,12 @@ def convert_from_hex(hex_num):
     return decs
 
 
-num_1_A = input('Enter the first number: ')
-num_2_B = input('Enter the second number: ')
+num_1_A = input('Перше число: ')
+num_2_B = input('Друге число: ')
 
 
 A = convert_from_hex(num_1_A)
 B = convert_from_hex(num_2_B)
-
-
-
-
-
 
 def LongAddition(a, b):
     max_len = max(len(a), len(b))
@@ -210,11 +205,11 @@ div_mod = convert_to_hex(divide[1])
 square = convert_to_hex(LongSquare(A))
 pow = convert_to_hex(LongPower(A, B))
 
-print('The result of addition: ' + sum)
-print('The result of substraction: ' + sub)
-print('The result of multiplication: ' + mul)
-print('The result of dividing: ' + div)
-print('The result of reminder of dividing: ' + div_mod)
-print('The result of elevation to the square: ' + square)
-print('The result of elevation: ' + pow)
+print(f'Додавання: {sum}')
+print(f'Віднімання: {sub}')
+print(f'Множення: {mul}')
+print(f'Ділення: {div}')
+print(f'Остача: {div_mod}')
+print(f'Піднесення до квадрату: {square}')
+print(f'Піднесення у степінь: {pow}')
 
